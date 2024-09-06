@@ -5,6 +5,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
+    id("org.ivcode.gradle-info") version "0.1-SNAPSHOT"
     id("org.ivcode.gradle-publish") version "0.1-SNAPSHOT"
 }
 
