@@ -1,4 +1,4 @@
-package org.ivcode.gradle.resources.util
+package org.ivcode.gradle.www.util
 
 import java.io.File
 

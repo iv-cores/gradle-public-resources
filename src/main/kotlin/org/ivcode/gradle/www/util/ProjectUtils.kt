@@ -1,4 +1,4 @@
-package org.ivcode.gradle.resources.util
+package org.ivcode.gradle.www.util
 
 import org.gradle.api.Project
 import org.gradle.api.file.Directory

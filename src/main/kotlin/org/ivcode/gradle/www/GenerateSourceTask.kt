@@ -1,11 +1,11 @@
-package org.ivcode.gradle.resources
+package org.ivcode.gradle.www
 
 import com.github.mustachejava.DefaultMustacheFactory
 import com.github.mustachejava.MustacheFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.ivcode.gradle.resources.util.getGeneratedSourceDirectory
-import org.ivcode.gradle.resources.util.toFilePath
+import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
+import org.ivcode.gradle.www.util.toFilePath
 import java.io.File
 import java.io.Writer
 

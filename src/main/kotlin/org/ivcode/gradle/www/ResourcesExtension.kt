@@ -1,6 +1,6 @@
-package org.ivcode.gradle.resources
+package org.ivcode.gradle.www
 
-import org.ivcode.gradle.resources.util.toFilePath
+import org.ivcode.gradle.www.util.toFilePath
 
 open class ResourcesExtension {
 

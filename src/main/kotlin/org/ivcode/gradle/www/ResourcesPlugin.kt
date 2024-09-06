@@ -1,12 +1,12 @@
-package org.ivcode.gradle.resources
+package org.ivcode.gradle.www
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.register
-import org.ivcode.gradle.resources.util.getGeneratedSourceDirectory
-import org.ivcode.gradle.resources.util.getResourceDirectory
+import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
+import org.ivcode.gradle.www.util.getResourceDirectory
 import java.io.File
 
 private const val TASK_GENERATE_SOURCE = "www-GenerateSources"

@@ -26,9 +26,9 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        create("gradle-public-resources") {
-            id = "org.ivcode.gradle-public-resources"
-            implementationClass = "org.ivcode.gradle.resources.ResourcesPlugin"
+        create("gradle-www") {
+            id = "org.ivcode.gradle-www"
+            implementationClass = "org.ivcode.gradle.www.ResourcesPlugin"
         }
     }
 }

@@ -6,4 +6,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "gradle-public-resources"
+rootProject.name = "gradle-www"
