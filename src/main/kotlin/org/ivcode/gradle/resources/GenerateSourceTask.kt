@@ -16,10 +16,10 @@ open class GenerateSourceTask: DefaultTask() {
     fun generate() {
         val extension = project.extensions.getByType(ResourcesExtension::class.java)
 
-        val packageDir = File(project.getGeneratedSourceDirectory().asFile, extension.configPackage!!.toFilePath())
+        val packageDir = File(project.getGeneratedSourceDirectory().asFile, extension.packageName!!.toFilePath())
         packageDir.mkdirs()
 
-        val file = File(packageDir, "${extension.configClass!!}.java")
+        val file = File(packageDir, "${extension.className!!}.java")
         SimpleFileGenerator("mustache/loader.mustache", extension).write(file)
     }
 }

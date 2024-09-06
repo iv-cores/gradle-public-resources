@@ -9,19 +9,20 @@ import org.ivcode.gradle.resources.util.getGeneratedSourceDirectory
 import org.ivcode.gradle.resources.util.getResourceDirectory
 import java.io.File
 
-private const val TASK_GENERATE_SOURCE = "generateStaticLoader"
-private const val TASK_COPY_RESOURCES = "copyStaticResources"
+private const val TASK_GENERATE_SOURCE = "www-GenerateSources"
+private const val TASK_COPY_RESOURCES = "www-CopyResources"
 
 class ResourcesPlugin: Plugin<Project> {
 
     override fun apply(project: Project) {
         project.configPlugins()
         project.configExtensions()
-        project.configDependencies()
-        project.configSourceSets()
         project.configTasks()
+        project.configDependencies()
+
         project.afterEvaluate {
             validateExtensions()
+            configSourceSets()
         }
     }
 
@@ -37,7 +38,7 @@ class ResourcesPlugin: Plugin<Project> {
      * Adds the plugin's extensions
      */
     private fun Project.configExtensions() {
-        extensions.create("resources", ResourcesExtension::class.java)
+        extensions.create("www", ResourcesExtension::class.java)
     }
 
     /**
@@ -62,8 +63,8 @@ class ResourcesPlugin: Plugin<Project> {
         tasks.register<Copy>(TASK_COPY_RESOURCES) {
             val extension = project.extensions.getByType(ResourcesExtension::class.java)
 
-            from(extension.resourcesDirectory)
-            into(File(project.getResourceDirectory().asFile, extension.classpathDirectory!!))
+            from(extension.resources)
+            into(File(project.getResourceDirectory().asFile, extension.classpath!!))
         }
 
         // Tie the tasks into the build process
