@@ -1,4 +1,4 @@
-# gradle-public-resources
+# gradle-www
 A plugin to create static resource packages for application's using the spring-boot framework.
 
 ## Overview
@@ -23,7 +23,7 @@ build.gradle.kts
 ```kotlin
 // apply the plugin
 plugins {
-  id("org.ivcode.gradle.public-resources") version "0.0.1-SNAPSHOT"
+  id("org.ivcode.gradle-www") version "<version>"
 }
 
 // configure the plugin
