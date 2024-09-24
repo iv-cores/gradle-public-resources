@@ -1,6 +1,9 @@
 package org.ivcode.gradle.www
 
-import org.ivcode.gradle.www.util.toFilePath
+import org.gradle.api.Project
+import org.ivcode.gradle.www.util.asPackage
+import org.ivcode.gradle.www.util.ifNotBlank
+import org.ivcode.gradle.www.util.requireNotBlank
 
 open class ResourcesExtension {
 
@@ -25,7 +28,7 @@ open class ResourcesExtension {
      * The location within the jar where the resources will be copied. This should be something unique and isolated
      * within the project to avoid conflicts, to not overwrite file, or accidentally expose other resources.
      */
-    var classpath: String? = null
+    var resourcePath: String? = null
 
     /**
      * The path to the resources. This is the path that will be used to access the resources from the web.
@@ -35,15 +38,20 @@ open class ResourcesExtension {
     var url: String? = null
 }
 
-internal fun ResourcesExtension.validate() {
-    packageName = packageName ?: error("packageName is required")
-    className   = className ?: "PublicResourceConfigurer"
-    resources   = resources ?: error("resources is required")
-    classpath   = classpath ?: "/${packageName!!.toFilePath("/")}/www/"
-    url         = url ?: "/**"
+internal fun ResourcesExtension.validate(project: Project) {
+    packageName = packageName ?: run {
+        val group = project.group.toString().ifNotBlank { "$it." }
+        "${group}${project.name}".asPackage()
+    }.requireNotBlank("packageName is required")
 
-    if (!classpath!!.startsWith("/") || !classpath!!.endsWith("/")) {
-        error("classpath must start and end with a forward slash \"/\"")
+
+    className     = className.orEmpty().ifBlank { "PublicResourceConfigurer" }
+    resources     = resources.requireNotBlank("resources is required")
+    resourcePath  = resourcePath.orEmpty().ifBlank { "/www/${packageName}/" }
+    url           = url.orEmpty().ifBlank { "/**" }
+
+    if (!resourcePath!!.startsWith("/") || !resourcePath!!.endsWith("/")) {
+        error("resourcePath must start and end with a forward slash \"/\": $resourcePath")
     }
 
     if(!url!!.endsWith("/**")) {
