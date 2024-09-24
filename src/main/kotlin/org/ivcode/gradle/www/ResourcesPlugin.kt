@@ -59,7 +59,7 @@ class ResourcesPlugin: Plugin<Project> {
             GenerateSourceTask::class
         )
 
-        // Copy resources to the classpath
+        // Copy resources to the resourcePath
         tasks.register<Copy>(TASK_COPY_RESOURCES) {
             val extension = project.extensions.getByType(ResourcesExtension::class.java)
 
