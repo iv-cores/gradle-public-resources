@@ -36,6 +36,11 @@ open class ResourcesExtension {
      *
      */
     var url: String? = null
+
+    /**
+     * A name prefix for the properties. This is to uniquely identify the properties for this resource loader.
+     */
+    var propertyPrefix: String? = null
 }
 
 internal fun ResourcesExtension.validate(project: Project) {
@@ -45,10 +50,11 @@ internal fun ResourcesExtension.validate(project: Project) {
     }.requireNotBlank("packageName is required")
 
 
-    className     = className.orEmpty().ifBlank { "PublicResourceConfigurer" }
-    resources     = resources.requireNotBlank("resources is required")
-    resourcePath  = resourcePath.orEmpty().ifBlank { "/www/${packageName}/" }
-    url           = url.orEmpty().ifBlank { "/**" }
+    className      = className.orEmpty().ifBlank { "PublicResourceConfigurer" }
+    resources      = resources.requireNotBlank("resources is required")
+    resourcePath   = resourcePath.orEmpty().ifBlank { "/www/${packageName}/" }
+    url            = url.orEmpty().ifBlank { "/**" }
+    propertyPrefix = propertyPrefix.orEmpty().ifBlank { project.name }
 
     if (!resourcePath!!.startsWith("/") || !resourcePath!!.endsWith("/")) {
         error("resourcePath must start and end with a forward slash \"/\": $resourcePath")

@@ -1,15 +1,28 @@
 package {{packageName}};
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
 public class {{className}} implements WebMvcConfigurer {
+
+    private final String url;
+
+    public {{className}} (
+        {{=<% %>=}}@Value("${<% propertyPrefix %>.url:<% url %>}")<%={{ }}=%> String url
+    ) {
+        this.url = url;
+        if(!this.url.endsWith("/**")) {
+            throw new IllegalArgumentException("{{propertyPrefix}}.url must end with '/**' to match all sub-paths : {{propertyPrefix}}.url=" + this.url);
+        }
+    }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-            .addResourceHandler("{{url}}")
+            .addResourceHandler(this.url)
             .addResourceLocations("classpath:{{resourcePath}}");
     }
 }

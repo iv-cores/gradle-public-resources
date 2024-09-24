@@ -72,13 +72,28 @@ If the resources need to be built or processed in any way before copying, make t
 
 The plugin is configured using the `www` extension. The following properties are available:
 
-| Property      | Description                                              | Default                    |
-|---------------|----------------------------------------------------------|----------------------------|
-| resources     | The directory containing the static resources to package | *required*                 |
-| packageName   | The package name for the generated loader class          | `${group}.${name}`         |
-| className     | The class name for the generated loader class            | `PublicResourceConfigurer` |
-| resourcePath  | The destination within the package for these resources   | `/www/${packageName}/`     |
-| url           | The URL path to serve the resources from                 | `/**`                      |
+| Property        | Description                                              | Default                    |
+|-----------------|----------------------------------------------------------|----------------------------|
+| resources       | The directory containing the static resources to package | *required*                 |
+| packageName     | The package name for the generated loader class          | `${group}.${name}`         |
+| className       | The class name for the generated loader class            | `PublicResourceConfigurer` |
+| resourcePath    | The destination within the package for these resources   | `/www/${packageName}/`     |
+| url             | The URL path to serve the resources from                 | `/**`                      |
+| propertyPrefix  | A prefix to use for the application properties           | `${name}`                  |
+
+<sub>Note: `${group}` and `${name}` refer to the gradle project's group and name properties.</sub>
+
+## Application Properties
+
+Properties can be set as applications properties (`application.properties`,`application.yml`, etc.) to configure the
+package at runtime. Currently, only the `url` property is defined.
+
+Assuming the `propertyPrefix` is set to `myapp`, you can override the `url` defined in the `www` extension at runtime
+with the following property:
+
+```properties
+myapp.url=/myapp/**
+```
 
 ## Security Considerations
 It is possible this plugin could leak sensitive information. To avoid this, public resources should be isolated. The
