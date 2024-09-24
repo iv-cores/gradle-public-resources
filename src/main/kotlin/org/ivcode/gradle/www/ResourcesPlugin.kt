@@ -46,7 +46,7 @@ class ResourcesPlugin: Plugin<Project> {
      */
     private fun Project.validateExtensions() {
         val extension = extensions.getByType(ResourcesExtension::class.java)
-        extension.validate()
+        extension.validate(this)
     }
 
     /**
@@ -64,7 +64,7 @@ class ResourcesPlugin: Plugin<Project> {
             val extension = project.extensions.getByType(ResourcesExtension::class.java)
 
             from(extension.resources)
-            into(File(project.getResourceDirectory().asFile, extension.classpath!!))
+            into(File(project.getResourceDirectory().asFile, extension.resourcePath!!))
         }
 
         // Tie the tasks into the build process
