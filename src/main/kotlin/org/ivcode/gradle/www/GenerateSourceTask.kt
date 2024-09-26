@@ -10,7 +10,9 @@ import org.ivcode.gradle.www.util.toFilePath
 import java.io.File
 import java.io.Writer
 
-
+/**
+ * Task to generate the source code
+ */
 open class GenerateSourceTask: DefaultTask() {
 
     @TaskAction
