@@ -36,4 +36,4 @@ internal fun String.asPackage(): String =
         .replace(Regex("^[_.]*"), "") // remove leading dots and underscores
         .replace(Regex("[_.]*$"), "") // remove trailing dots and underscores
         .replace(Regex("[^a-z0-9_.]"), "") // remove invalid characters
-        .requireNotNullOrBlank("invalid package name")
+        .requireNotNullOrBlank("invalid package : package name is blank after conversion : $this")

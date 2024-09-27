@@ -47,6 +47,7 @@ internal fun ResourcesExtension.validate(project: Project) {
     resources = resources.requireNotNullOrBlank("resources is required")
 
     packageName = packageName.ifNullOrBlank {
+        // If group or name is blank, then we don't need a separator
         val separator = if (project.group.toString().isNotBlank() && project.name.isNotBlank()) "." else ""
         "${project.group}$separator${project.name}".asPackage()
     }.requireNotNullOrBlank("packageName is required")

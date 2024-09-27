@@ -48,7 +48,8 @@ open class GenerateSourceTask: DefaultTask() {
 
 internal class SimpleFileGenerator (
     private val template: String,
-    private val scope: Any
+    private val scope: Any,
+    private val mustacheFactory: MustacheFactory = DefaultMustacheFactory()
 ) {
 
     fun write(file: File) {
@@ -58,9 +59,7 @@ internal class SimpleFileGenerator (
     }
 
     private fun write(writer: Writer) {
-        val mf: MustacheFactory = DefaultMustacheFactory()
-        val m = mf.compile(template)
-
+        val m = mustacheFactory.compile(template)
         m.execute(writer, scope).flush()
     }
 }

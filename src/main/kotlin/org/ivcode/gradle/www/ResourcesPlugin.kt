@@ -67,7 +67,7 @@ class ResourcesPlugin: Plugin<Project> {
             into(File(project.getResourceDirectory().asFile, extension.resourcePath!!))
         }
 
-        // Tie the tasks into the build process
+        // Tie the tasks into the java-library build process
         tasks.named("compileJava").configure {
             dependsOn(TASK_GENERATE_SOURCE)
         }
@@ -88,7 +88,9 @@ class ResourcesPlugin: Plugin<Project> {
      * Adds the necessary dependencies for the generated source
      */
     private fun Project.configDependencies() {
-        dependencies.add("implementation", "org.springframework:spring-webmvc:5.3.22")
-        dependencies.add("implementation", "org.springframework:spring-context:5.3.22")
+        val springVersion = "5.3.22"
+
+        dependencies.add("implementation", "org.springframework:spring-webmvc:$springVersion")
+        dependencies.add("implementation", "org.springframework:spring-context:$springVersion")
     }
 }
