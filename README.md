@@ -1,17 +1,17 @@
 # gradle-www
-This plugin helps you create a Spring Boot auto-configuration library to serve your UI (or any other static resources).
+This plugin helps create a UI package that serves static resources from a Spring Boot application.
+
+What it does:
+- Packages static resources into a JAR file (useful for importing modern UIs, like vue or react, into a Spring Boot application)
+- Generates auto-configuration classes to serve the resources, without configuration, from your Spring Boot application
 
 ## Usage
-
 The process is to simply build your library (using this plugin) and import it into your Spring Boot application.
 
 ### Building Your Library
-
-The first step is to build your library with the plugin. This plugin packages your static resources and
-generates the auto-configuration classes.
+From your library project, add the plugin to your build script.
 
 #### Plugin Setup
-
 In the `settings.gradle.kts` file, add the plugin repository:
 ```kotlin
 // add the repository
@@ -43,7 +43,6 @@ named("www-CopyResources").configure {
 ```
 
 #### Build
-
 To build the package, run the following command:
 
 ```shell
@@ -51,7 +50,6 @@ To build the package, run the following command:
 ```
 
 ### Import Your Library
-
 From your spring-boot application, import your library:
 
 ```kotlin
@@ -62,28 +60,7 @@ dependencies {
 
 Spring-boot will see your library and automatically configure the resources to be served from your application.
 
-## Tasks
-The plugin pulls in the `java-library` plugin and adds the following tasks:
-
-### Generate Sources
- - name: `www-GenerateSources`
- - executes before: `compileJava`
-
-This task generates the classes needed to autoconfigure the application and serve the static resources.
-
-
-### Copy Resources
- - name: `www-CopyResources`
- - executes before: `processResources`
-
-This task copies the resources from the specified directory to the gradle build directory so that it can be packaged
-into the JAR file.
-
-If the resources need to be built or processed in any way before copying, make this task (`www-CopyResources`) dependent
-on those build tasks.
-
 ## Configuration
-
 The plugin is configured using the `www` extension. The following properties are available:
 
 | Property        | Description                                              | Default                    |
@@ -98,9 +75,8 @@ The plugin is configured using the `www` extension. The following properties are
 <sub>Note: `${group}` and `${name}` refer to the gradle project's group and name properties.</sub>
 
 ## Application Properties
-
-Properties can be set in `application.properties`, `application.yml`, or similar configuration files to modify your
-library at runtime. Currently, the only configurable property is the `url`.
+Spring application properties (`application.properties`, `application.yml`, etc.) can be used to modify your library at
+runtime. Currently, the only configurable property is the `url`.
 
 Assuming the `propertyPrefix` in the `www` configuration is set to `my-ui`, you can override the `url` at runtime with
 the following property:
@@ -112,6 +88,25 @@ the following property:
 # The property prefix 'my-ui' is defined in the 'www' configuration using 'propertyPrefix'.
 my-ui.url=/ui/**
 ```
+
+## Tasks
+The plugin pulls in the `java-library` plugin and adds the following tasks:
+
+### Generate Sources
+ - name: `www-GenerateSources`
+ - executes before: `compileJava`
+
+This task generates the classes needed to autoconfigure the application and serve the static resources.
+
+### Copy Resources
+ - name: `www-CopyResources`
+ - executes before: `processResources`
+
+This task copies the resources from the specified directory to the gradle build directory so that it can be packaged
+into the JAR file.
+
+If the resources need to be built or processed in any way before copying, make this task (`www-CopyResources`) dependent
+on those build tasks.
 
 ## Security Considerations
 This plugin could potentially expose sensitive information if public resources are not properly isolated. The
