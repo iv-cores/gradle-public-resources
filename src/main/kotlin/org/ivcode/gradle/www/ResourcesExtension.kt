@@ -43,6 +43,11 @@ open class ResourcesExtension {
     var propertyPrefix: String? = null
 }
 
+/**
+ * Validates the resources extension and assigns default values where necessary.
+ *
+ * @param project the project
+ */
 internal fun ResourcesExtension.validate(project: Project) {
     resources = resources.requireNotNullOrBlank("resources is required")
 

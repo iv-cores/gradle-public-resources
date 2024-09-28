@@ -1,22 +1,20 @@
 package org.ivcode.gradle.www
 
+import io.mockk.every
+import io.mockk.mockk
 import org.gradle.api.Project
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.*
-import test.utils.mock
-
 import kotlin.apply as kApply
-
 
 class ResourcesExtensionTest {
 
     @Test
     fun `validate - with valid inputs - sets all properties correctly`() {
-        val project: Project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project: Project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -33,15 +31,14 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with blank name - sets package name without separator`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns ""
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
             propertyPrefix = "myproject"
         }
-
 
         extension.validate(project)
         assertEquals("com.example", extension.packageName)
@@ -49,14 +46,13 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with blank group - sets package name without separator`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns ""
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
         }
-
 
         extension.validate(project)
         assertEquals("myproject", extension.packageName)
@@ -64,9 +60,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - without resources defined - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension()
 
@@ -77,9 +73,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with correctly formatted resourcePath`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -92,9 +88,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - without prefix & suffix slashes in resourcePath - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -108,9 +104,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with only prefix slash in resourcePath - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -124,9 +120,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with only suffix slash in resourcePath - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -140,9 +136,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with valid url - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"
@@ -155,9 +151,9 @@ class ResourcesExtensionTest {
 
     @Test
     fun `validate - with invalid url - throws exception`() {
-        val project = mock<Project>().kApply {
-            `when`(group).thenReturn("com.example")
-            `when`(name).thenReturn("myproject")
+        val project = mockk<Project>().kApply {
+            every { group } returns "com.example"
+            every { name } returns "myproject"
         }
         val extension = ResourcesExtension().kApply {
             resources = "src/main/resources"

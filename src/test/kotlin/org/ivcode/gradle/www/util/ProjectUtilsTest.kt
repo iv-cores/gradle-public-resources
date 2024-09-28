@@ -1,5 +1,7 @@
 package org.ivcode.gradle.www.util
 
+import io.mockk.every
+import io.mockk.mockk
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -8,8 +10,6 @@ import org.gradle.api.provider.Provider
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
-import test.utils.mock
 import java.io.File
 
 class ProjectUtilsTest {
@@ -20,30 +20,25 @@ class ProjectUtilsTest {
 
     @BeforeEach
     fun setUp() {
-        project = mock<Project>()
-        layout = mock<ProjectLayout>()
-        buildDirectory = mock<Directory>()
+        project = mockk()
+        layout = mockk()
+        buildDirectory = mockk()
 
-        `when`(project.layout).thenReturn(layout)
+        every { project.layout } returns layout
 
-        `when`(layout.buildDirectory)
-            .thenReturn(mock(DirectoryProperty::class.java))
+        every { layout.buildDirectory } returns mockk<DirectoryProperty>()
 
-        `when`(layout.buildDirectory.dir(anyString()))
-            .thenReturn(mock<Provider<Directory>>())
+        every { layout.buildDirectory.dir(any<String>()) } returns mockk<Provider<Directory>>()
 
-        `when`(layout.buildDirectory.dir("generated${File.separator}sources${File.separator}main${File.separator}java"))
-            .thenReturn(mock<Provider<Directory>>())
+        every { layout.buildDirectory.dir("generated${File.separator}sources${File.separator}main${File.separator}java") } returns mockk<Provider<Directory>>()
 
-        `when`(layout.buildDirectory.dir("resources${File.separator}main"))
-            .thenReturn(mock<Provider<Directory>>())
+        every { layout.buildDirectory.dir("resources${File.separator}main") } returns mockk<Provider<Directory>>()
     }
 
     @Test
     fun getGeneratedSourceDirectory_returnsCorrectDirectory() {
-        val expectedDirectory = mock<Directory>()
-        `when`(layout.buildDirectory.dir("generated${File.separator}sources${File.separator}main${File.separator}java").get())
-            .thenReturn(expectedDirectory)
+        val expectedDirectory = mockk<Directory>()
+        every { layout.buildDirectory.dir("generated${File.separator}sources${File.separator}main${File.separator}java").get() } returns expectedDirectory
 
         val result = project.getGeneratedSourceDirectory()
 
@@ -52,9 +47,8 @@ class ProjectUtilsTest {
 
     @Test
     fun getResourceDirectory_returnsCorrectDirectory() {
-        val expectedDirectory = mock<Directory>()
-        `when`(layout.buildDirectory.dir("resources${File.separator}main").get())
-            .thenReturn(expectedDirectory)
+        val expectedDirectory = mockk<Directory>()
+        every { layout.buildDirectory.dir("resources${File.separator}main").get() } returns expectedDirectory
 
         val result = project.getResourceDirectory()
 

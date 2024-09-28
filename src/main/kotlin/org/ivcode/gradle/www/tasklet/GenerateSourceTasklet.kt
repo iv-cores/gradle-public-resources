@@ -1,48 +1,47 @@
-package org.ivcode.gradle.www
+package org.ivcode.gradle.www.tasklet
 
 import com.github.mustachejava.DefaultMustacheFactory
 import com.github.mustachejava.MustacheFactory
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.ivcode.gradle.www.ResourcesExtension
 import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
 import org.ivcode.gradle.www.util.getResourceDirectory
 import org.ivcode.gradle.www.util.toFilePath
 import java.io.File
 import java.io.Writer
 
-/**
- * Task to generate the source code
- */
-open class GenerateSourceTask(): DefaultTask() {
+class GenerateSourceTasklet: Tasklet<Task> {
 
-    @TaskAction
-    fun generate() {
-        val extension = project.extensions.getByType(ResourcesExtension::class.java)
+    override fun execute(task: Task) = with(task.project) {
+        val extension = extensions.getByType(ResourcesExtension::class.java)
 
-        generateConfigurer(extension)
-        generateSpringFactories(extension)
+        generateConfigurer(this, extension)
+        generateSpringFactories(this, extension)
     }
 
-    /**
-     * Generates the configurer class
-     */
-    private fun generateConfigurer(extension: ResourcesExtension) {
+    private fun generateConfigurer(project: Project, extension: ResourcesExtension) {
         val packageDir = File(project.getGeneratedSourceDirectory().asFile, extension.packageName!!.toFilePath())
-        packageDir.mkdirs()
+        ioMkdirs(packageDir)
 
         val configurerFile = File(packageDir, "${extension.className!!}.java")
-        SimpleFileGenerator("mustache/configurer.mustache", extension).write(configurerFile)
+        ioWrite(configurerFile, "mustache/configurer.mustache", extension)
     }
 
-    /**
-     * Generates the auto-config imports file
-     */
-    private fun generateSpringFactories(extension: ResourcesExtension) {
+    private fun generateSpringFactories(project: Project, extension: ResourcesExtension) {
         val metaDir = File(project.getResourceDirectory().asFile, "META-INF/spring")
-        metaDir.mkdirs()
+        ioMkdirs(metaDir)
 
         val springFactoriesFile = File(metaDir, "org.springframework.boot.autoconfigure.AutoConfiguration.imports")
-        SimpleFileGenerator("mustache/imports.mustache", extension).write(springFactoriesFile)
+        ioWrite(springFactoriesFile, "mustache/imports.mustache", extension)
+    }
+
+    internal fun ioWrite(to: File, template: String, extension: ResourcesExtension) {
+        SimpleFileGenerator(template, extension).write(to)
+    }
+
+    internal fun ioMkdirs(file: File) {
+        file.mkdirs()
     }
 }
 
@@ -55,10 +54,8 @@ internal class SimpleFileGenerator (
     private val mustacheFactory: MustacheFactory = DefaultMustacheFactory()
 ) {
 
-    fun write(file: File) {
-        file.writer().use { writer ->
-            write(writer)
-        }
+    fun write(file: File) = file.writer().use {
+        write(it)
     }
 
     private fun write(writer: Writer) {

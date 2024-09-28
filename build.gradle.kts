@@ -21,7 +21,7 @@ dependencies {
     implementation("com.github.spullara.mustache.java:compiler:0.9.14")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
-    testImplementation("org.mockito:mockito-core:4.2.0")
+    testImplementation("io.mockk:mockk:1.13.12")
 }
 
 gradlePlugin {
