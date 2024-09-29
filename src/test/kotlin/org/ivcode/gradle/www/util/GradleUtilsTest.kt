@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class ProjectUtilsTest {
+class GradleUtilsTest {
 
     private lateinit var project: Project
     private lateinit var layout: ProjectLayout

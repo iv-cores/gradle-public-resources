@@ -2,7 +2,6 @@ package org.ivcode.gradle.www.tasklet
 
 import io.mockk.*
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.ivcode.gradle.www.ResourcesExtension
 import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
 import org.ivcode.gradle.www.util.getResourceDirectory
@@ -16,7 +15,6 @@ import java.io.File
 class GenerateSourceTaskletTest {
 
     private lateinit var project: Project
-    private lateinit var task: Task
     private lateinit var extension: ResourcesExtension
     private lateinit var tasklet: GenerateSourceTasklet
 
@@ -29,14 +27,12 @@ class GenerateSourceTaskletTest {
 
         // depended-on components
         project = mockk()
-        task = mockk()
         extension = mockk()
 
         // system under test
         tasklet = spyk(GenerateSourceTasklet())
 
         // Mock the project and extension
-        every { task.project } returns project
         every { project.extensions.getByType(ResourcesExtension::class.java) } returns extension
 
         every { project.getGeneratedSourceDirectory() } returns mockk {
@@ -49,7 +45,7 @@ class GenerateSourceTaskletTest {
 
         // Make sure the tasklet doesn't actually write to the file system
         every { tasklet.ioWrite(any(), any(), any()) } just Runs
-        every { tasklet.ioMkdirs(any()) } just Runs
+        every { tasklet.ioMkDirs(any()) } just Runs
     }
 
 
@@ -62,10 +58,10 @@ class GenerateSourceTaskletTest {
         every { extension.packageName } returns "com.example"
         every { extension.className } returns "MyConfigurer"
 
-        tasklet.execute(task)
+        tasklet.execute(project)
 
         // Configurer
-        verify(exactly = 1) { tasklet.ioMkdirs(
+        verify(exactly = 1) { tasklet.ioMkDirs(
             File("build/generated/com/example")
         )}
         verify(exactly = 1) { tasklet.ioWrite(
@@ -75,7 +71,7 @@ class GenerateSourceTaskletTest {
         )}
 
         // Spring Factories
-        verify(exactly = 1) { tasklet.ioMkdirs(
+        verify(exactly = 1) { tasklet.ioMkDirs(
             File("build/resources/META-INF/spring")
         )}
         verify(exactly = 1) { tasklet.ioWrite(
