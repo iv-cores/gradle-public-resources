@@ -5,6 +5,8 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
+    jacoco
+    id("org.sonarqube") version "5.1.0.4882"
     id("org.ivcode.gradle-info") version "0.1-SNAPSHOT"
     id("org.ivcode.gradle-publish") version "0.1-SNAPSHOT"
 }
@@ -30,6 +32,23 @@ gradlePlugin {
             id = "org.ivcode.gradle-www"
             implementationClass = "org.ivcode.gradle.www.ResourcesPlugin"
         }
+    }
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+tasks.build { dependsOn("jacocoTestReport") }
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", name)
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: throw IllegalStateException("SONAR_HOST_URL is not set"))
+        property("sonar.login", System.getenv("SONAR_LOGIN") ?: throw IllegalStateException("SONAR_LOGIN is not set"))
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
