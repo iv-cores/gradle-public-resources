@@ -45,7 +45,7 @@ tasks.build { dependsOn("jacocoTestReport") }
 
 sonarqube {
     properties {
-        property("sonar.projectKey", name)
+        property("sonar.projectKey", "iv-cores_$name")
         property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: throw IllegalStateException("SONAR_HOST_URL is not set"))
         property("sonar.login", System.getenv("SONAR_LOGIN") ?: throw IllegalStateException("SONAR_LOGIN is not set"))
         property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
@@ -59,12 +59,6 @@ sonarqube {
         System.getProperty("sonar.links.ci")?.let {
             property("sonar.links.ci", it)
         }
-
-        property("sonar.pullrequest.provider", "GitHub")
-        property("sonar.pullrequest.github.repository", "iv-cores/gradle-www")
-        property("sonar.pullrequest.key", System.getProperty("sonar.pullrequest.key") ?: throw IllegalStateException("sonar.pullrequest.key is not set"))
-        property("sonar.pullrequest.branch", System.getProperty("sonar.pullrequest.branch") ?: throw IllegalStateException("sonar.pullrequest.branch is not set"))
-        property("sonar.pullrequest.base", "main")
     }
 }
 
