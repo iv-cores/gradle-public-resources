@@ -59,6 +59,12 @@ sonarqube {
         System.getProperty("sonar.links.ci")?.let {
             property("sonar.links.ci", it)
         }
+
+        property("sonar.pullrequest.provider", "GitHub")
+        property("sonar.pullrequest.github.repository", "iv-cores/gradle-www")
+        property("sonar.pullrequest.key", System.getProperty("sonar.pullrequest.key") ?: throw IllegalStateException("sonar.pullrequest.key is not set"))
+        property("sonar.pullrequest.branch", System.getProperty("sonar.pullrequest.branch") ?: throw IllegalStateException("sonar.pullrequest.branch is not set"))
+        property("sonar.pullrequest.base", "main")
     }
 }
 
