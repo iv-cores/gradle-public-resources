@@ -1,3 +1,7 @@
+[![Coverage](https://sonar.ivcode.org/api/project_badges/measure?project=iv-cores_gradle-www&metric=coverage)](https://sonar.ivcode.org/dashboard?id=iv-cores_gradle-www)
+[![Quality Gate Status](https://sonar.ivcode.org/api/project_badges/measure?project=iv-cores_gradle-www&metric=alert_status)](https://sonar.ivcode.org/dashboard?id=iv-cores_gradle-www)
+
+
 # gradle-www
 This plugin helps create a UI package that serves static resources from a Spring Boot application.
 
