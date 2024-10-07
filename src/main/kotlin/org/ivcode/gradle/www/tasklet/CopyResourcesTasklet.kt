@@ -18,8 +18,10 @@ class CopyResourcesTasklet: Tasklet<Copy> {
      */
     override fun configuration(task: Copy): Unit = with(task) {
         val extension = project.extensions.getByType(ResourcesExtension::class.java)
+        val resource = extension.resources ?: throw IllegalArgumentException("Resources should be specified")
+        val resourcePath = extension.resourcePath ?: throw IllegalArgumentException("Resource path should be specified")
 
-        from(extension.resources)
-        into(File(project.getResourceDirectory().asFile, extension.resourcePath!!))
+        from(resource)
+        into(File(project.getResourceDirectory().asFile, resourcePath))
     }
 }
