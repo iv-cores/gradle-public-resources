@@ -1,15 +1,13 @@
 package org.ivcode.gradle.www.tasklet
 
-import com.github.mustachejava.DefaultMustacheFactory
-import com.github.mustachejava.MustacheFactory
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.ivcode.gradle.www.ResourcesExtension
+import org.ivcode.gradle.www.util.SimpleFileGenerator
 import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
 import org.ivcode.gradle.www.util.getResourceDirectory
 import org.ivcode.gradle.www.util.toFilePath
 import java.io.File
-import java.io.Writer
 
 /**
  * A tasklet that generates source files using Mustache templates.
@@ -88,35 +86,3 @@ class GenerateSourceTasklet: Tasklet<Task> {
     }
 }
 
-/**
- * A simple file generator that uses Mustache templates.
- *
- * @property template The Mustache template path.
- * @property scope The data to be used in the template.
- * @property mustacheFactory The MustacheFactory instance.
- */
-internal class SimpleFileGenerator (
-    private val template: String,
-    private val scope: Any,
-    private val mustacheFactory: MustacheFactory = DefaultMustacheFactory()
-) {
-
-    /**
-     * Writes the generated content to a file.
-     *
-     * @param file The target file.
-     */
-    fun write(file: File) = file.writer().use {
-        write(it)
-    }
-
-    /**
-     * Writes the generated content to a writer.
-     *
-     * @param writer The writer to which the content will be written.
-     */
-    private fun write(writer: Writer) {
-        val m = mustacheFactory.compile(template)
-        m.execute(writer, scope).flush()
-    }
-}

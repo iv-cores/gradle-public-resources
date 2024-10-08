@@ -23,7 +23,7 @@ internal class SimpleFileGenerator (
      *
      * @param file The target file.
      */
-    fun write(file: File) = file.writer().use {
+    fun write(file: File) = file.fileWriter().use {
         write(it)
     }
 
@@ -32,7 +32,7 @@ internal class SimpleFileGenerator (
      *
      * @param writer The writer to which the content will be written.
      */
-    private fun write(writer: Writer) {
+    internal fun write(writer: Writer) {
         val m = mustacheFactory.compile(template)
         m.execute(writer, scope).flush()
     }
