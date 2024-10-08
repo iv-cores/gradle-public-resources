@@ -3,23 +3,27 @@ package org.ivcode.gradle.www
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.register
+import org.ivcode.gradle.www.tasklet.CopyResourcesTasklet
+import org.ivcode.gradle.www.tasklet.GenerateSourceTasklet
+import org.ivcode.gradle.www.util.addExtraProperty
 import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
-import org.ivcode.gradle.www.util.getResourceDirectory
-import java.io.File
+import org.ivcode.gradle.www.util.registerTasklet
 
-private const val TASK_GENERATE_SOURCE = "www-GenerateSources"
-private const val TASK_COPY_RESOURCES = "www-CopyResources"
+internal const val TASK_GENERATE_SOURCE = "www-GenerateSources"
+internal const val TASK_COPY_RESOURCES = "www-CopyResources"
 
 class ResourcesPlugin: Plugin<Project> {
 
     override fun apply(project: Project) {
+        project.addExtraProperty("www.springVersion", "5.3.22")
+
+        // Set up the plugin
         project.configPlugins()
         project.configExtensions()
         project.configTasks()
         project.configDependencies()
 
+        // Validate the extensions after the project has been evaluated
         project.afterEvaluate {
             validateExtensions()
             configSourceSets()
@@ -30,7 +34,7 @@ class ResourcesPlugin: Plugin<Project> {
      * Adds dependent plugins
      */
     private fun Project.configPlugins() {
-        // Depends on the java-library plugin
+        // This plugin ties into the java-library plugin
         plugins.apply("java-library")
     }
 
@@ -53,24 +57,24 @@ class ResourcesPlugin: Plugin<Project> {
      * Adds the necessary tasks for the plugin
      */
     private fun Project.configTasks() {
-        // Generate the source code
-        tasks.register(
+        // --== Generate Sources ==--
+        // Register the GenerateSourceTasklet
+        tasks.registerTasklet (
             TASK_GENERATE_SOURCE,
-            GenerateSourceTask::class
+            GenerateSourceTasklet()
         )
-
-        // Copy resources to the resourcePath
-        tasks.register<Copy>(TASK_COPY_RESOURCES) {
-            val extension = project.extensions.getByType(ResourcesExtension::class.java)
-
-            from(extension.resources)
-            into(File(project.getResourceDirectory().asFile, extension.resourcePath!!))
-        }
-
-        // Tie the tasks into the build process
+        // Generate sources should run before compiling Java
         tasks.named("compileJava").configure {
             dependsOn(TASK_GENERATE_SOURCE)
         }
+
+        // --== Copy Resources ==--
+        // Register the CopyResourcesTasklet
+        tasks.registerTasklet (
+            TASK_COPY_RESOURCES,
+            CopyResourcesTasklet()
+        )
+        // Copy resources before processing resources
         tasks.named("processResources").configure {
             dependsOn(TASK_COPY_RESOURCES)
         }
@@ -85,10 +89,13 @@ class ResourcesPlugin: Plugin<Project> {
     }
 
     /**
-     * Adds the necessary dependencies for the generated source
+     * Adds the necessary dependencies to compile the generated sources
      */
     private fun Project.configDependencies() {
-        dependencies.add("implementation", "org.springframework:spring-webmvc:5.3.22")
-        dependencies.add("implementation", "org.springframework:spring-context:5.3.22")
+        val springVersion = property("www.springVersion")!!
+
+        // Note: The dependencies should not be transitive. Let the consuming project decide what version to use.
+        dependencies.add("implementation", "org.springframework:spring-webmvc:$springVersion")
+        dependencies.add("implementation", "org.springframework:spring-context:$springVersion")
     }
 }

@@ -1,2 +1,2 @@
-@Library("iv-jenkins@isaiah/gradle-plugin") _
+@Library("iv-jenkins@isaiah/sonar") _
 GradlePluginBuild [:]

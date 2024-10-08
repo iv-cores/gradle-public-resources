@@ -1,6 +1,7 @@
 package org.ivcode.gradle.www.util
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrowsExactly
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -59,6 +60,66 @@ class PackageUtilsTest {
     fun `asPackage - converts string to package with hyphen`() {
         val input = "Org\\Example-Package"
         val expected = "org.example_package"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles empty string`() {
+        val input = ""
+
+        assertThrowsExactly(IllegalArgumentException::class.java) {
+            input.asPackage()
+        }
+    }
+
+    @Test
+    fun `asPackage - handles string with only invalid characters`() {
+        val input = "!@#$%^&*()"
+
+        assertThrowsExactly(IllegalArgumentException::class.java) {
+            input.asPackage()
+        }
+    }
+
+    @Test
+    fun `asPackage - handles string with leading and trailing invalid characters`() {
+        val input = "!@#org.example.package!@#"
+        val expected = "org.example.package"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles string with multiple invalid characters`() {
+        val input = "org!@#.example!@#.package"
+        val expected = "org.example.package"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles string with multiple spaces and hyphens`() {
+        val input = "org  -  example  -  package"
+        val expected = "org_example_package"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles string with multiple underscores`() {
+        val input = "org__example__package"
+        val expected = "org_example_package"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles string with mixed valid and invalid characters`() {
+        val input = "org!@#example$%^package"
+        val expected = "orgexamplepackage"
+        assertEquals(expected, input.asPackage())
+    }
+
+    @Test
+    fun `asPackage - handles string with leading and trailing dots and underscores`() {
+        val input = "._._org.example.package_._."
+        val expected = "org.example.package"
         assertEquals(expected, input.asPackage())
     }
 }

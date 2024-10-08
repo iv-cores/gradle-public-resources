@@ -2,8 +2,8 @@ package org.ivcode.gradle.www
 
 import org.gradle.api.Project
 import org.ivcode.gradle.www.util.asPackage
-import org.ivcode.gradle.www.util.ifNotBlank
-import org.ivcode.gradle.www.util.requireNotBlank
+import org.ivcode.gradle.www.util.ifNullOrBlank
+import org.ivcode.gradle.www.util.requireNotNullOrBlank
 
 open class ResourcesExtension {
 
@@ -43,24 +43,33 @@ open class ResourcesExtension {
     var propertyPrefix: String? = null
 }
 
+/**
+ * Validates the resources extension and assigns default values where necessary.
+ *
+ * @param project the project
+ */
 internal fun ResourcesExtension.validate(project: Project) {
-    packageName = packageName ?: run {
-        val group = project.group.toString().ifNotBlank { "$it." }
-        "${group}${project.name}".asPackage()
-    }.requireNotBlank("packageName is required")
+    resources = resources.requireNotNullOrBlank("resources is required")
 
+    packageName = packageName.ifNullOrBlank {
+        // If group or name is blank, then we don't need a separator
+        val separator = if (project.group.toString().isNotBlank() && project.name.isNotBlank()) "." else ""
+        "${project.group}$separator${project.name}".asPackage()
+    }.requireNotNullOrBlank("packageName is required")
 
-    className      = className.orEmpty().ifBlank { "PublicResourceConfigurer" }
-    resources      = resources.requireNotBlank("resources is required")
-    resourcePath   = resourcePath.orEmpty().ifBlank { "/www/${packageName}/" }
-    url            = url.orEmpty().ifBlank { "/**" }
-    propertyPrefix = propertyPrefix.orEmpty().ifBlank { project.name }
+    className = className.ifNullOrBlank("PublicResourceConfigurer")
 
-    if (!resourcePath!!.startsWith("/") || !resourcePath!!.endsWith("/")) {
-        error("resourcePath must start and end with a forward slash \"/\": $resourcePath")
+    resourcePath = resourcePath.ifNullOrBlank("/www/$packageName/")
+    require(resourcePath!!.startsWith("/") && resourcePath!!.endsWith("/")) {
+        "resourcePath must start and end with a forward slash \"/\": $resourcePath"
     }
 
-    if(!url!!.endsWith("/**")) {
-        error("url must end matching all files and directories with \"/**\"")
+    url = url.ifNullOrBlank("/**")
+    require(url!!.endsWith("/**")) {
+        "url must end matching all files and directories with \"/**\""
     }
+
+    propertyPrefix = propertyPrefix
+        .ifNullOrBlank(project.name)
+        .requireNotNullOrBlank("propertyPrefix is required")
 }
