@@ -5,15 +5,18 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.ivcode.gradle.www.tasklet.CopyResourcesTasklet
 import org.ivcode.gradle.www.tasklet.GenerateSourceTasklet
+import org.ivcode.gradle.www.util.addExtraProperty
 import org.ivcode.gradle.www.util.getGeneratedSourceDirectory
 import org.ivcode.gradle.www.util.registerTasklet
 
-private const val TASK_GENERATE_SOURCE = "www-GenerateSources"
-private const val TASK_COPY_RESOURCES = "www-CopyResources"
+internal const val TASK_GENERATE_SOURCE = "www-GenerateSources"
+internal const val TASK_COPY_RESOURCES = "www-CopyResources"
 
 class ResourcesPlugin: Plugin<Project> {
 
     override fun apply(project: Project) {
+        project.addExtraProperty("www.springVersion", "5.3.22")
+
         // Set up the plugin
         project.configPlugins()
         project.configExtensions()
@@ -89,7 +92,7 @@ class ResourcesPlugin: Plugin<Project> {
      * Adds the necessary dependencies to compile the generated sources
      */
     private fun Project.configDependencies() {
-        val springVersion = "5.3.22"
+        val springVersion = property("www.springVersion")!!
 
         // Note: The dependencies should not be transitive. Let the consuming project decide what version to use.
         dependencies.add("implementation", "org.springframework:spring-webmvc:$springVersion")

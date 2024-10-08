@@ -34,3 +34,9 @@ internal inline fun <reified T: Task> TaskContainer.registerTasklet(name: String
         tasklet.configuration(this)
     }
 }
+
+internal fun Project.addExtraProperty(name: String, value: Any) {
+    if(!hasProperty(name)) {
+        extensions.extraProperties.set(name, value)
+    }
+}
